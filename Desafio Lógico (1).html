@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desafio Lógico</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#d9f1ff;--card:#fff;--ink:#2d2a55;--soft:#ece9ff;--pink:#ff6fb1;--sun:#ffcf33;--mint:#2fcf8e;--sky:#3fb8f0;--bad:#ff5a5f;--line:#cfc8ff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1e1b3f;--card:#2c2960;--ink:#fff6e0;--soft:#3a3675;--line:#5a54a8;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1e1b3f;--card:#2c2960;--ink:#fff6e0;--soft:#3a3675;--line:#5a54a8;color-scheme:dark}
+*{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:"Fredoka","Comic Sans MS","Trebuchet MS",sans-serif;font-size:18px;
+background-image:radial-gradient(circle at 12% 18%,rgba(255,207,51,.35) 0 38px,transparent 40px),radial-gradient(circle at 90% 12%,rgba(255,111,177,.3) 0 50px,transparent 52px),radial-gradient(circle at 85% 88%,rgba(47,207,142,.3) 0 60px,transparent 62px),radial-gradient(circle at 8% 85%,rgba(63,184,240,.3) 0 46px,transparent 48px);background-attachment:fixed}
+.wrap{max-width:680px;margin:0 auto;padding:18px 14px 40px}
+.card{background:var(--card);border:4px solid var(--ink);border-radius:28px;padding:20px;box-shadow:0 8px 0 var(--ink)}
+h1{margin:0 0 6px;font-size:2.3rem;line-height:1.1;font-weight:700}
+h2{margin:10px 0 6px;font-size:1.5rem;font-weight:700}
+.center{text-align:center}
+.big{font-size:4rem;line-height:1}
+button{font:inherit;font-weight:600;cursor:pointer;border:3px solid var(--ink);border-radius:999px;padding:10px 22px;color:#2d2a55;box-shadow:0 5px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+button:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--ink)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:4px solid var(--sky);outline-offset:3px}
+.go{background:var(--sun);font-size:1.3rem;padding:12px 30px}
+.ok{background:var(--mint)}.hintb{background:var(--pink)}.next{background:var(--sky)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.pill{background:var(--card);border:3px solid var(--ink);border-radius:999px;padding:4px 16px;font-weight:600}
+.dots{display:flex;gap:5px;margin-bottom:14px}
+.dots i{flex:1;height:12px;border-radius:9px;background:var(--soft);border:2px solid var(--ink)}
+.dots i.done{background:var(--mint)}.dots i.cur{background:var(--sun)}.dots i.miss{background:var(--bad)}
+.lv{display:inline-block;background:var(--soft);border:3px solid var(--ink);border-radius:999px;padding:2px 14px;font-weight:600;font-size:.95rem}
+.q{white-space:pre-line;font-size:1.15rem;line-height:1.45;margin:6px 0 12px}
+.opts{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:8px}
+.opts li{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border:3px solid var(--line);border-radius:18px;padding:8px 12px;line-height:1.35;font-size:1rem}
+.opts b{flex:none;width:30px;height:30px;border-radius:50%;background:var(--sun);color:#2d2a55;border:3px solid var(--ink);display:grid;place-items:center;font-size:.95rem}
+.timer{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.tnum{flex:none;width:58px;height:58px;border-radius:50%;background:var(--sky);color:#2d2a55;border:4px solid var(--ink);display:grid;place-items:center;font-size:1.5rem;font-weight:700}
+.tnum.low{background:var(--bad);color:#fff}
+.bar{flex:1;height:20px;background:var(--soft);border:3px solid var(--ink);border-radius:999px;overflow:hidden}
+.bar div{height:100%;width:100%;background:var(--sky);transition:width 1s linear,background .3s}
+.bar div.low{background:var(--bad)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input{flex:1;min-width:150px;font:inherit;font-size:1.2rem;padding:10px 16px;border:3px solid var(--ink);border-radius:999px;background:var(--card);color:var(--ink)}
+.shake{animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.box{margin-top:14px;border:3px dashed var(--ink);border-radius:18px;padding:12px 14px;line-height:1.45;font-size:1rem}
+.box.hint{background:#fff3b8;color:#2d2a55}
+.box.good{background:#c8f7e1;color:#14412f;border-style:solid}
+.box.bad{background:#ffd9da;color:#5a1418;border-style:solid}
+.hide{display:none}
+.stars{font-size:3rem;letter-spacing:6px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:480px){h1{font-size:1.9rem}.card{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="start" class="card center">
+  <div class="big">🧩🦉🔢</div>
+  <h1>Desafio Lógico</h1>
+  <p>São 10 enigmas, cada vez mais difíceis. Você tem 40 segundos em cada um. Digite a resposta e mostre que você é craque!</p>
+  <div class="box" style="text-align:left">
+    ⭐ Acerto sem dica: <b>50 pontos</b><br>
+    💡 Acerto com dica: <b>25 pontos</b> (a dica custa 10 pontos)<br>
+    ✏️ Digite a letra (A, B, C ou D) ou o resultado<br>
+    🔁 Você tem 2 tentativas por enigma
+  </div>
+  <p><button class="go" id="bStart">Começar!</button></p>
+</section>
+
+<section id="game" class="hide">
+  <div class="top"><span class="pill" id="num">Enigma 1 de 10</span><span class="pill" id="score">⭐ 0 pontos</span></div>
+  <div class="dots" id="dots"></div>
+  <div class="card">
+    <span class="lv" id="lv"></span>
+    <h2 id="title"></h2>
+    <div class="q" id="q"></div>
+    <ul class="opts" id="opts"></ul>
+    <div class="timer"><div class="tnum" id="tnum">40</div><div class="bar"><div id="tbar"></div></div></div>
+    <div class="row">
+      <input id="ans" type="text" autocomplete="off" autocapitalize="off" aria-label="Sua resposta">
+      <button class="ok" id="bAns">Responder</button>
+      <button class="hintb" id="bHint">💡 Dica (-10)</button>
+    </div>
+    <div class="box hint hide" id="hint"></div>
+    <div class="box hide" id="fb" role="status" aria-live="polite"></div>
+    <p class="center hide" id="nextWrap"><button class="next" id="bNext">Próximo enigma</button></p>
+  </div>
+</section>
+
+<section id="end" class="card center hide">
+  <div class="stars" id="stars"></div>
+  <h1 id="endT"></h1>
+  <p id="endP"></p>
+  <p class="big" style="font-size:2.6rem">⭐ <span id="endS"></span> pontos</p>
+  <p><button class="go" id="bAgain">Jogar de novo</button></p>
+</section>
+
+</div>
+<script>
+const TIME=40;
+const Q=[
+{lv:"🟢 Nível 1 · Muito fácil",t:"O número misterioso",q:"Sou um número. Quando você soma 5 a mim, o resultado é 12.\n\nQue número sou eu?",o:["5","6","7","8"],a:"c",k:["7"],r:"C) 7",
+ h:"Pense ao contrário: que conta desfaz uma soma?",
+ e:"Se número + 5 = 12, basta fazer a conta inversa: 12 − 5 = 7. Conferindo: 7 + 5 = 12. ✅"},
+{lv:"🟢 Nível 2 · Fácil",t:"A sequência secreta",q:"Observe a sequência:\n\n2 – 4 – 8 – 16 – 32 – ?\n\nQual é o próximo número?",o:["36","48","54","64"],a:"d",k:["64"],r:"D) 64",
+ h:"Compare cada número com o anterior. O que acontece com ele?",
+ e:"Cada número é o dobro do anterior: 2×2=4, 4×2=8, 8×2=16, 16×2=32. Então o próximo é 32×2 = 64. ✅"},
+{lv:"🟡 Nível 3 · Fácil intermediário",t:"As caixas de maçãs",q:"João possui 3 caixas. Cada caixa contém 8 maçãs.\n\nEle deu 5 maçãs para sua irmã e depois comprou mais 7.\n\nCom quantas maçãs João ficou?",o:["24","26","28","30"],a:"b",k:["26"],r:"B) 26 maçãs",
+ h:"Primeiro descubra quantas maçãs ele tinha no total. Depois tire e some.",
+ e:"3 caixas × 8 maçãs = 24 maçãs. Deu 5: 24 − 5 = 19. Comprou 7: 19 + 7 = 26 maçãs. ✅"},
+{lv:"🟡 Nível 4 · Intermediário",t:"A idade misteriosa",q:"Pedro tem o dobro da idade de Lucas. Juntos, eles possuem 18 anos.\n\nQuantos anos tem Pedro?",o:["6 anos","9 anos","12 anos","14 anos"],a:"c",k:["12"],r:"C) 12 anos",
+ h:"Se Lucas tem 1 parte, Pedro tem 2 partes. Quantas partes são no total?",
+ e:"Lucas = 1 parte e Pedro = 2 partes, então são 3 partes iguais. 18 ÷ 3 = 6, logo Lucas tem 6 anos e Pedro tem 6 × 2 = 12 anos. 6 + 12 = 18. ✅"},
+{lv:"🟡 Nível 5 · Intermediário",t:"O código do cadeado",q:"Um cadeado possui um código de três algarismos. Descubra o código seguindo as pistas:\n\n1. O primeiro algarismo é o dobro de 2.\n2. O segundo algarismo é a metade de 10.\n3. O terceiro algarismo é a soma dos dois primeiros algarismos menos 5.\n\nQual é o código?",o:["445","454","455","545"],a:"b",k:["454"],r:"B) 454",
+ h:"Descubra um algarismo de cada vez, seguindo as pistas na ordem.",
+ e:"1º: o dobro de 2 é 4. 2º: a metade de 10 é 5. 3º: 4 + 5 = 9, e 9 − 5 = 4. O código é 4-5-4: 454. ✅"},
+{lv:"🟠 Nível 6 · Difícil",t:"Os animais da fazenda",q:"Em uma fazenda existem galinhas e coelhos.\n\nAo todo, são 10 animais e 28 patas.\n\nSabendo que galinhas possuem 2 patas e coelhos possuem 4 patas, quantos coelhos existem?",o:["3","4","5","6"],a:"b",k:["4"],r:"B) 4 coelhos",
+ h:"Imagine que os 10 animais são galinhas. Quantas patas teríamos? Quantas faltam?",
+ e:"Se os 10 fossem galinhas, teríamos 10 × 2 = 20 patas. Faltam 28 − 20 = 8 patas. Cada coelho no lugar de uma galinha acrescenta 2 patas, então 8 ÷ 2 = 4 coelhos (e 6 galinhas). Conferindo: 4×4 + 6×2 = 16 + 12 = 28. ✅"},
+{lv:"🟠 Nível 7 · Muito difícil",t:"O relógio maluco",q:"Um relógio adianta 5 minutos a cada hora.\n\nÀs 8 horas da manhã, ele foi ajustado corretamente.\n\nQuando o relógio marcar 14 horas, quantas horas terão passado de verdade?",o:["5 horas","5 horas e 30 minutos","5 horas e 45 minutos","6 horas"],a:"b",k:["5-30","5-32"],r:"B) 5 horas e 30 minutos",
+ h:"Em 1 hora de verdade, quantos minutos o relógio maluco anda?",
+ e:"Em cada hora de verdade, o relógio anda 60 + 5 = 65 minutos. Das 8h às 14h no relógio passaram 6 horas = 360 minutos. Como 360 ÷ 65 ≈ 5,5, passaram cerca de 5 horas e 30 minutos de verdade. A resposta mais próxima é a B. ✅"},
+{lv:"🔴 Nível 8 · Desafio avançado",t:"Os três números",q:"Três números possuem as seguintes características:\n\n• A soma dos três é 30.\n• O segundo número é o dobro do primeiro.\n• O terceiro número é 6 unidades maior que o primeiro.\n\nQuais são os três números?",o:["5, 10 e 15","6, 12 e 12","4, 8 e 18","3, 9 e 18"],a:"b",k:["6-12-12"],r:"B) 6, 12 e 12",
+ h:"Chame o primeiro número de 1 parte. O segundo vale 2 partes e o terceiro vale 1 parte + 6.",
+ e:"Primeiro = 1 parte, segundo = 2 partes, terceiro = 1 parte + 6. Juntos: 4 partes + 6 = 30, então 4 partes = 24 e 1 parte = 6. Os números são 6, 12 (o dobro de 6) e 12 (6 + 6). Soma: 6 + 12 + 12 = 30. ✅"},
+{lv:"🔴 Nível 9 · Especialista",t:"A travessia do rio",q:"Um explorador precisa atravessar um rio levando uma raposa, uma galinha e um saco de milho. O barco só leva o explorador e um item por viagem.\n\nProblemas:\n• A raposa não pode ficar sozinha com a galinha.\n• A galinha não pode ficar sozinha com o milho.\n\nQual é a sequência correta para atravessar sem perder nenhum item?",o:["Leva a raposa, volta sozinho, leva o milho e volta com a galinha.","Leva a galinha, volta sozinho, leva a raposa, traz a galinha de volta, leva o milho e volta sozinho para buscar a galinha.","Leva o milho, volta sozinho, leva a galinha e depois a raposa.","Leva a galinha, leva o milho e depois busca a raposa."],a:"b",k:[],r:"B)",
+ h:"A galinha é a mais complicada: ela não pode ficar com ninguém. Comece por ela e pense em quem pode voltar junto.",
+ e:"Primeiro leva a galinha (raposa e milho ficam juntos e não há problema). Volta sozinho e leva a raposa. Traz a galinha de volta, para ela não ficar com a raposa. Deixa a galinha, leva o milho e deixa com a raposa. Volta sozinho, busca a galinha e todos atravessam! ✅"},
+{lv:"🔴 Nível 10 · Mestre dos enigmas",t:"O cofre dos quatro números",q:"Um cofre possui uma senha de quatro algarismos diferentes. Pistas:\n\n1. A soma dos quatro algarismos é 17.\n2. O primeiro algarismo é o dobro do último.\n3. O segundo algarismo é 3 unidades maior que o último.\n4. O terceiro algarismo é igual à soma do primeiro com o último.\n5. Nenhum algarismo é zero.\n\nQual é a senha do cofre?",o:["4562","5462","4652","6254"],a:"a",k:["4562"],r:"A) 4562",
+ h:"Tudo depende do último algarismo. Teste valores pequenos para ele (1, 2, 3...) e monte os outros.",
+ e:"Chame o último de 2: o primeiro é o dobro, 4; o segundo é 2 + 3 = 5; o terceiro é 4 + 2 = 6. A senha é 4-5-6-2 e 4 + 5 + 6 + 2 = 17. ✅ (Com outros valores a soma não dá 17 ou os algarismos se repetem.)"}
+];
+const $=id=>document.getElementById(id);
+let i=0,score=0,hinted=false,tries=2,left=TIME,timer=null,locked=false,hits=0,res=[];
+function show(id){["start","game","end"].forEach(s=>$(s).classList.toggle("hide",s!==id))}
+function dots(){$("dots").innerHTML=Q.map((_,n)=>`<i class="${res[n]===1?"done":res[n]===0?"miss":n===i?"cur":""}"></i>`).join("")}
+function upScore(){$("score").textContent="⭐ "+score+" pontos"}
+function paintTimer(){
+  $("tnum").textContent=left;$("tbar").style.width=(left/TIME*100)+"%";
+  const low=left<=10;$("tnum").classList.toggle("low",low);$("tbar").classList.toggle("low",low);
+}
+function load(){
+  const p=Q[i];hinted=false;tries=2;locked=false;left=TIME;
+  $("num").textContent=`Enigma ${i+1} de 10`;
+  $("lv").textContent=p.lv;$("title").textContent=`Enigma ${i+1} – ${p.t}`;$("q").textContent=p.q;
+  $("opts").innerHTML=p.o.map((t,n)=>`<li><b>${"ABCD"[n]}</b><span></span></li>`).join("");
+  [...$("opts").querySelectorAll("span")].forEach((s,n)=>s.textContent=p.o[n]);
+  $("ans").value="";$("ans").disabled=false;$("bAns").disabled=false;$("bHint").disabled=false;
+  $("ans").placeholder=p.k.length?"Letra ou resultado":"Digite a letra (A, B, C ou D)";
+  ["hint","fb","nextWrap"].forEach(x=>$(x).classList.add("hide"));
+  $("bNext").textContent=i===9?"Ver resultado 🏆":"Próximo enigma";
+  dots();upScore();$("tbar").style.transition="none";paintTimer();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{$("tbar").style.transition=""}));
+  clearInterval(timer);timer=setInterval(tick,1000);$("ans").focus();
+}
+function tick(){left--;paintTimer();if(left<=0)finish(false,true)}
+function norm(v){return v.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
+function check(v){
+  const p=Q[i],n=norm(v),m=n.match(/^\(?([a-d])[\).]?$/);
+  if(m)return m[1]===p.a;
+  const nums=(n.match(/\d+/g)||[]).join("-");
+  return nums!==""&&p.k.includes(nums);
+}
+function answer(){
+  if(locked)return;const v=$("ans").value;
+  if(!norm(v)){$("ans").classList.add("shake");setTimeout(()=>$("ans").classList.remove("shake"),400);return}
+  if(check(v))return finish(true,false);
+  tries--;
+  if(tries>0){
+    const f=$("fb");f.className="box bad";f.textContent="Quase! Essa não é a resposta. Você ainda tem 1 tentativa. 🤔";
+    $("ans").value="";$("ans").classList.add("shake");setTimeout(()=>$("ans").classList.remove("shake"),400);$("ans").focus();
+  }else finish(false,false);
+}
+function finish(ok,timeout){
+  locked=true;clearInterval(timer);
+  $("ans").disabled=true;$("bAns").disabled=true;$("bHint").disabled=true;
+  const p=Q[i],f=$("fb");let head;
+  if(ok){const pts=hinted?25:50;score+=pts;hits++;res[i]=1;head=`🎉 Muito bem! +${pts} pontos${hinted?" (acerto com dica)":""}`}
+  else{res[i]=0;head=timeout?"⏰ O tempo acabou!":"😅 Não foi dessa vez!";head+=` A resposta certa era <b>${p.r}</b>.`}
+  f.className="box "+(ok?"good":"bad");
+  f.innerHTML=`<b>${head}</b><br><span id="exp"></span>`;
+  $("exp").textContent=p.e;
+  ["fb","nextWrap"].forEach(x=>$(x).classList.remove("hide"));
+  upScore();dots();$("bNext").focus();
+}
+function hint(){
+  if(locked||hinted)return;hinted=true;score=Math.max(0,score-10);upScore();
+  $("hint").textContent="💡 Dica: "+Q[i].h;$("hint").classList.remove("hide");$("bHint").disabled=true;
+}
+function next(){if(i<9){i++;load()}else end()}
+function end(){
+  show("end");
+  const s=hits>=8?3:hits>=5?2:1;
+  $("stars").textContent="⭐".repeat(s)+"☆".repeat(3-s);
+  $("endT").textContent=hits===10?"Mestre dos enigmas! 🏆":hits>=7?"Você é demais! 🎉":hits>=4?"Muito bom! 👏":"Continue tentando! 💪";
+  $("endP").textContent=`Você acertou ${hits} de 10 enigmas.`;
+  $("endS").textContent=score;
+}
+function start(){i=0;score=0;hits=0;res=[];show("game");load()}
+$("bStart").onclick=start;$("bAgain").onclick=start;$("bAns").onclick=answer;$("bHint").onclick=hint;$("bNext").onclick=next;
+$("ans").addEventListener("keydown",e=>{if(e.key==="Enter")answer()});
+</script>
+</body>
+</html>
